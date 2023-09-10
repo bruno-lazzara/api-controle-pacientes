@@ -1,5 +1,6 @@
 import md5 from 'md5';
 import { usuarios } from '../models/index.js';
+import jwt from 'jsonwebtoken';
 
 const key = process.env.SALT_KEY;
 
@@ -24,10 +25,21 @@ class UsuariosController {
                 email: req.body.email,
                 senha: md5(req.body.senha + key)
             });
-            
+
             if (usuario) {
-                // Retornar token criado para o usuário
-                res.status(200).send('Autenticado');
+                const token = jwt.sign({
+                    id: usuario._id,
+                    email: usuario.email,
+                    name: usuario.nome
+                }, key, { expiresIn: '1h' });
+                
+                res.status(200).send({
+                    token: token,
+                    data: {
+                        email: usuario.email,
+                        name: usuario.nome
+                    }
+                });
             } else {
                 res.status(401).send('Não autenticado');
             }
