@@ -1,6 +1,6 @@
 import md5 from 'md5';
 import { usuarios } from '../models/index.js';
-import jwt from 'jsonwebtoken';
+import authService from '../services/authService.js';
 
 const key = process.env.SALT_KEY;
 
@@ -27,12 +27,12 @@ class UsuariosController {
             });
 
             if (usuario) {
-                const token = jwt.sign({
+                const token = await authService.generateToken({
                     id: usuario._id,
                     email: usuario.email,
                     name: usuario.nome
-                }, key, { expiresIn: '1h' });
-                
+                });
+
                 res.status(200).send({
                     token: token,
                     data: {
