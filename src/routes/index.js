@@ -1,4 +1,5 @@
 import express from 'express';
+import pacientesRoutes from './pacientesRoutes.js';
 
 const routes = (app) => {
     app.route('/').get((req, res) => {
@@ -6,7 +7,8 @@ const routes = (app) => {
     });
 
     app.use(
-        express.json()
+        express.json(),
+        pacientesRoutes
     );
 };
 
