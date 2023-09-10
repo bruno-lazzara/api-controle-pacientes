@@ -1,5 +1,6 @@
 import express from 'express';
 import pacientesRoutes from './pacientesRoutes.js';
+import usuariosRoutes from './usuariosRoutes.js';
 
 const routes = (app) => {
     app.route('/').get((req, res) => {
@@ -8,7 +9,8 @@ const routes = (app) => {
 
     app.use(
         express.json(),
-        pacientesRoutes
+        pacientesRoutes,
+        usuariosRoutes
     );
 };
 
