@@ -77,6 +77,8 @@ class PacientesController {
                     $project: {
                         '_id': 1,
                         'nome': 1,
+                        'valor_secao': 1,
+                        'desconta_imposto': 1,
                         'sessoes': {
                             $filter: {
                                 input: '$sessoes',

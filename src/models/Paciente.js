@@ -34,6 +34,14 @@ const pacienteSchema = new mongoose.Schema({
         type: String,
         required: [true, 'O nome do paciente é obrigatório']
     },
+    valor_secao: {
+        type: Number,
+        required: [true, 'O valor da seção é obrigatório']
+    },
+    desconta_imposto: {
+        type: Boolean,
+        default: false
+    },
     sessoes: [sessaoSchema]
 },
 {
