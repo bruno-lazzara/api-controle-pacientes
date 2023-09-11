@@ -32,6 +32,72 @@ class PacientesController {
             res.status(500).send({ message: 'Erro ao cadastrar paciente' });
         }
     };
+
+    static atualizarSessaoPaciente = async (req, res) => {
+        try {
+            const { idPaciente, idSessao } = req.params;
+            const sessaoAtualizar = req.body.status_semana;
+
+            const atualizado = await pacientes.findOneAndUpdate({
+                '_id': idPaciente,
+                'sessoes._id': idSessao
+            }, {
+                '$set': {
+                    'sessoes.$.status_semana': sessaoAtualizar
+                }
+            });
+
+            if (atualizado) {
+                res.status(200).send({ message: 'Sessão atualizada' });
+            } else {
+                res.status(404).send({ message: 'Paciente ou sessão não encontrados' });
+            }
+
+        } catch (err) {
+            res.status(500).send({ message: 'Erro ao atualizar sessão' });
+        }
+    };
+
+    static listarPacientesPorMesAnoSessao = async (req, res) => {
+        try {
+            const { mes, ano } = req.params;
+
+            const listaPacientes = await pacientes.aggregate([
+                {
+                    $match: {
+                        'sessoes': {
+                            $elemMatch: {
+                                'mes': Number(mes),
+                                'ano': Number(ano)
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        '_id': 1,
+                        'nome': 1,
+                        'sessoes': {
+                            $filter: {
+                                input: '$sessoes',
+                                as: 'sessao',
+                                cond: {
+                                    $and: [
+                                        { $eq: ['$$sessao.mes', Number(mes)] },
+                                        { $eq: ['$$sessao.ano', Number(ano)] }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            ]);
+            
+            res.status(200).send(listaPacientes);
+        } catch (err) {
+            res.status(500).send({ message: 'Erro ao buscar pacientes' });
+        }
+    };
 }
 
 export default PacientesController;

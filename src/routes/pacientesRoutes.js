@@ -6,9 +6,9 @@ const router = express.Router();
 
 router
     .get('/pacientes', AuthService.authorize, PacientesController.listarPacientes)
+    .get('/pacientes/:mes/:ano', AuthService.authorize, PacientesController.listarPacientesPorMesAnoSessao)
     .get('/pacientes/:id', AuthService.authorize, PacientesController.listarPacientePorId)
-    .post('/pacientes', AuthService.authorize, PacientesController.cadastrarPaciente);
-// .put('/pacientes/:id', PacientesController.atualizarPaciente)
-// .delete('/pacientes/:id', PacientesController.excluirPaciente);
+    .post('/pacientes', AuthService.authorize, PacientesController.cadastrarPaciente)
+    .put('/pacientes/:idPaciente/:idSessao', AuthService.authorize, PacientesController.atualizarSessaoPaciente);
 
 export default router;
