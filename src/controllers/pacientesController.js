@@ -94,7 +94,38 @@ class PacientesController {
                     }
                 }
             ]);
-            
+
+            res.status(200).send(listaPacientes);
+        } catch (err) {
+            res.status(500).send({ message: 'Erro ao buscar pacientes' });
+        }
+    };
+
+    static listarPacientesSemSessao = async (req, res) => {
+        try {
+            const { mes, ano } = req.params;
+
+            const listaPacientes = await pacientes.aggregate([
+                {
+                    $match: {
+                        'sessoes': {
+                            $not: {
+                                $elemMatch: {
+                                    'mes': Number(mes),
+                                    'ano': Number(ano)
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        '_id': 1,
+                        'nome': 1
+                    }
+                }
+            ]);
+
             res.status(200).send(listaPacientes);
         } catch (err) {
             res.status(500).send({ message: 'Erro ao buscar pacientes' });
