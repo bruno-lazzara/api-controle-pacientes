@@ -1,3 +1,4 @@
+import parametros from '../models/Parametro.js';
 import { pacientes } from '../models/index.js';
 
 class PacientesController {
@@ -6,7 +7,6 @@ class PacientesController {
             const listaPacientes = await pacientes.find();
             res.status(200).send(listaPacientes);
         } catch (err) {
-            console.log(err);
             res.status(500).send({ message: 'Erro ao listar pacientes' });
         }
     };
@@ -17,7 +17,6 @@ class PacientesController {
             const paciente = await pacientes.findById(id);
             res.status(200).send(paciente);
         } catch (err) {
-            console.log(err);
             res.status(500).send({ message: 'Erro ao listar paciente' });
         }
     };
@@ -28,7 +27,6 @@ class PacientesController {
             const resultado = await paciente.save();
             res.status(201).send(resultado.toJSON());
         } catch (err) {
-            console.log(err);
             res.status(500).send({ message: 'Erro ao cadastrar paciente' });
         }
     };
@@ -95,6 +93,27 @@ class PacientesController {
                 }
             ]);
 
+            const paramImposto = await parametros.findOne({
+                nome: 'Imposto'
+            });
+
+            listaPacientes.forEach((paciente) => {
+                paciente.sessoes.forEach((sessao) => {
+                    let totalPago = 0;
+                    let valorSecao = paciente.valor_secao;
+                    if (paciente.desconta_imposto) {
+                        valorSecao = valorSecao * (1 - paramImposto.valor);
+                    }
+                    totalPago += sessao.status_semana?.semana_1 === 'PAGO' ? valorSecao : 0;
+                    totalPago += sessao.status_semana?.semana_2 === 'PAGO' ? valorSecao : 0;
+                    totalPago += sessao.status_semana?.semana_3 === 'PAGO' ? valorSecao : 0;
+                    totalPago += sessao.status_semana?.semana_4 === 'PAGO' ? valorSecao : 0;
+                    totalPago += sessao.status_semana?.semana_5 === 'PAGO' ? valorSecao : 0;
+
+                    sessao.valor_total_pago = totalPago;
+                });
+            });
+
             res.status(200).send(listaPacientes);
         } catch (err) {
             res.status(500).send({ message: 'Erro ao buscar pacientes' });
@@ -154,7 +173,6 @@ class PacientesController {
 
             res.status(200).send({ message: 'Nova sessão adicionada com sucesso' });
         } catch (err) {
-            console.log(err);
             res.status(500).send({ message: 'Erro ao adicionar sessão' });
         }
     };
