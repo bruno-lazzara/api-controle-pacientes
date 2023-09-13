@@ -1,11 +1,7 @@
 import mongoose from 'mongoose';
 
 const semanaSchema = {
-    type: String,
-    enum: {
-        values: ['NÃO TEVE', 'TEVE', 'NO SHOW', 'PAGO'],
-        message: 'O valor \'{VALUE}\' não é permitido'
-    }
+    type: String
 };
 
 const sessaoSchema = new mongoose.Schema({
