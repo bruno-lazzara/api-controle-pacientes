@@ -10,6 +10,7 @@ router
     .get('/pacientes/semsessao/:mes/:ano', AuthService.authorize, PacientesController.listarPacientesSemSessao)
     .get('/pacientes/:id', AuthService.authorize, PacientesController.listarPacientePorId)
     .post('/pacientes', AuthService.authorize, PacientesController.cadastrarPaciente)
-    .put('/pacientes/:idPaciente/:idSessao', AuthService.authorize, PacientesController.atualizarSessaoPaciente);
+    .put('/pacientes/:idPaciente/:idSessao', AuthService.authorize, PacientesController.atualizarSessaoPaciente)
+    .put('/pacientes/novasessao', AuthService.authorize, PacientesController.adicionarSessao);
 
 export default router;

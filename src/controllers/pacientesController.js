@@ -131,6 +131,33 @@ class PacientesController {
             res.status(500).send({ message: 'Erro ao buscar pacientes' });
         }
     };
+
+    static adicionarSessao = async (req, res) => {
+        try {
+            const { pacienteId, mes, ano } = req.body;
+
+            const paciente = await pacientes.findById(pacienteId);
+
+            if (!paciente) {
+                throw new Error('Paciente não encontrado');
+            }
+
+            paciente.sessoes.push({
+                mes: mes,
+                ano: ano,
+                status_semana: {
+                    semana_1: ''
+                }
+            });
+
+            await paciente.save();
+
+            res.status(200).send({ message: 'Nova sessão adicionada com sucesso' });
+        } catch (err) {
+            console.log(err);
+            res.status(500).send({ message: 'Erro ao adicionar sessão' });
+        }
+    };
 }
 
 export default PacientesController;
