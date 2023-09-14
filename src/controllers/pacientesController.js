@@ -199,6 +199,26 @@ class PacientesController {
             res.status(500).send({ message: 'Erro ao atualizar paciente' });
         }
     };
+
+    static apagarSessaoPaciente = async (req, res) => {
+        try {
+            const { idPaciente, idSessao } = req.params;
+
+            const paciente = await pacientes.findById(idPaciente);
+            if (!paciente) {
+                return res.status(404).send({ message: 'Paciente não encontrado' });
+            }
+
+            paciente.sessoes.pull(idSessao);
+
+            await paciente.save();
+
+            res.status(200).send({ message: 'Sessão removida com sucesso' });
+        } catch (err) {
+            console.log(err);
+            res.status(500).send({ message: 'Erro ao remover sessão' });
+        }
+    };
 }
 
 export default PacientesController;
