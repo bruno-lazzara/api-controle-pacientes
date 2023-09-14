@@ -11,6 +11,7 @@ router
     .get('/pacientes/:id', AuthService.authorize, PacientesController.listarPacientePorId)
     .post('/pacientes', AuthService.authorize, PacientesController.cadastrarPaciente)
     .put('/pacientes/:idPaciente/:idSessao', AuthService.authorize, PacientesController.atualizarSessaoPaciente)
-    .put('/pacientes/novasessao', AuthService.authorize, PacientesController.adicionarSessao);
+    .put('/pacientes/novasessao', AuthService.authorize, PacientesController.adicionarSessao)
+    .put('/pacientes/:id', AuthService.authorize, PacientesController.atualizarPaciente);
 
 export default router;

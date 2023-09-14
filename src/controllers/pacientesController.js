@@ -176,6 +176,29 @@ class PacientesController {
             res.status(500).send({ message: 'Erro ao adicionar sessão' });
         }
     };
+
+    static atualizarPaciente = async (req, res) => {
+        try {
+            const { id } = req.params;
+            const data = req.body;
+
+            const atualizado = await pacientes.findByIdAndUpdate(id, {
+                $set: {
+                    nome: data.nome,
+                    valor_secao: data.valor_secao,
+                    desconta_imposto: data.desconta_imposto
+                }
+            });
+
+            if (atualizado) {
+                res.status(200).send({ message: 'Paciente atualizado' });
+            } else {
+                res.status(404).send({ message: 'Paciente não encontrado' });
+            }
+        } catch (err) {
+            res.status(500).send({ message: 'Erro ao atualizar paciente' });
+        }
+    };
 }
 
 export default PacientesController;
