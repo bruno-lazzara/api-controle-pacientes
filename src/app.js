@@ -5,7 +5,7 @@ import cors from 'cors';
 
 db.on('error', console.log.bind(console, 'Erro de conexão'));
 db.once('open', () => {
-    console.log('conexão com o banco feita com sucesso');
+    console.log(`conexão com o banco feita com sucesso - ${db.db.databaseName} - ${process.env.DB}`);
 });
 
 const app = express();
