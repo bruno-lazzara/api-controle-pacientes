@@ -100,17 +100,26 @@ class PacientesController {
             listaPacientes.forEach((paciente) => {
                 paciente.sessoes.forEach((sessao) => {
                     let totalPago = 0;
+                    let totalDevido = 0;
                     let valorSecao = paciente.valor_secao;
                     if (paciente.desconta_imposto) {
                         valorSecao = valorSecao * (1 - paramImposto.valor);
                     }
+
                     totalPago += sessao.status_semana?.semana_1 === 'PAGO' ? valorSecao : 0;
                     totalPago += sessao.status_semana?.semana_2 === 'PAGO' ? valorSecao : 0;
                     totalPago += sessao.status_semana?.semana_3 === 'PAGO' ? valorSecao : 0;
                     totalPago += sessao.status_semana?.semana_4 === 'PAGO' ? valorSecao : 0;
                     totalPago += sessao.status_semana?.semana_5 === 'PAGO' ? valorSecao : 0;
 
+                    totalDevido += (sessao.status_semana?.semana_1 === 'TEVE' || sessao.status_semana?.semana_1 === 'NO SHOW') ? paciente.valor_secao : 0;
+                    totalDevido += (sessao.status_semana?.semana_2 === 'TEVE' || sessao.status_semana?.semana_2 === 'NO SHOW') ? paciente.valor_secao : 0;
+                    totalDevido += (sessao.status_semana?.semana_3 === 'TEVE' || sessao.status_semana?.semana_3 === 'NO SHOW') ? paciente.valor_secao : 0;
+                    totalDevido += (sessao.status_semana?.semana_4 === 'TEVE' || sessao.status_semana?.semana_4 === 'NO SHOW') ? paciente.valor_secao : 0;
+                    totalDevido += (sessao.status_semana?.semana_5 === 'TEVE' || sessao.status_semana?.semana_5 === 'NO SHOW') ? paciente.valor_secao : 0;
+
                     sessao.valor_total_pago = totalPago;
+                    sessao.valor_total_devido = totalDevido;
                 });
             });
 
