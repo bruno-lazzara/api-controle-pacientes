@@ -225,6 +225,7 @@ class PacientesController {
             const { idPaciente, idSessao } = req.params;
 
             const paciente = await pacientes.findById(idPaciente);
+            
             if (!paciente) {
                 return res.status(404).send({ message: 'Paciente não encontrado' });
             }
