@@ -38,6 +38,10 @@ const pacienteSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    paciente_psi_mundo: {
+        type: Boolean,
+        default: false
+    },
     sessoes: [sessaoSchema]
 },
 {
