@@ -77,6 +77,7 @@ class PacientesController {
                         'nome': 1,
                         'valor_secao': 1,
                         'desconta_imposto': 1,
+                        'paciente_psi_mundo': 1,
                         'sessoes': {
                             $filter: {
                                 input: '$sessoes',
@@ -97,20 +98,29 @@ class PacientesController {
                 nome: 'Imposto'
             });
 
+            const paramDescontoPsiPeloMundo = await parametros.findOne({
+                nome: 'Desconto Psicologia Pelo Mundo'
+            });
+
             listaPacientes.forEach((paciente) => {
                 paciente.sessoes.forEach((sessao) => {
                     let totalPago = 0;
                     let totalDevido = 0;
-                    let valorSecao = paciente.valor_secao;
+                    let valorSecaoAposDescontos = paciente.valor_secao;
+
                     if (paciente.desconta_imposto) {
-                        valorSecao = valorSecao * (1 - paramImposto.valor);
+                        valorSecaoAposDescontos = valorSecaoAposDescontos * (1 - paramImposto.valor);
                     }
 
-                    totalPago += sessao.status_semana?.semana_1 === 'PAGO' ? valorSecao : 0;
-                    totalPago += sessao.status_semana?.semana_2 === 'PAGO' ? valorSecao : 0;
-                    totalPago += sessao.status_semana?.semana_3 === 'PAGO' ? valorSecao : 0;
-                    totalPago += sessao.status_semana?.semana_4 === 'PAGO' ? valorSecao : 0;
-                    totalPago += sessao.status_semana?.semana_5 === 'PAGO' ? valorSecao : 0;
+                    if (paciente.paciente_psi_mundo) {
+                        valorSecaoAposDescontos -= paramDescontoPsiPeloMundo.valor;
+                    }
+
+                    totalPago += sessao.status_semana?.semana_1 === 'PAGO' ? valorSecaoAposDescontos : 0;
+                    totalPago += sessao.status_semana?.semana_2 === 'PAGO' ? valorSecaoAposDescontos : 0;
+                    totalPago += sessao.status_semana?.semana_3 === 'PAGO' ? valorSecaoAposDescontos : 0;
+                    totalPago += sessao.status_semana?.semana_4 === 'PAGO' ? valorSecaoAposDescontos : 0;
+                    totalPago += sessao.status_semana?.semana_5 === 'PAGO' ? valorSecaoAposDescontos : 0;
 
                     totalDevido += (sessao.status_semana?.semana_1 === 'TEVE' || sessao.status_semana?.semana_1 === 'NO SHOW') ? paciente.valor_secao : 0;
                     totalDevido += (sessao.status_semana?.semana_2 === 'TEVE' || sessao.status_semana?.semana_2 === 'NO SHOW') ? paciente.valor_secao : 0;
@@ -195,7 +205,8 @@ class PacientesController {
                 $set: {
                     nome: data.nome,
                     valor_secao: data.valor_secao,
-                    desconta_imposto: data.desconta_imposto
+                    desconta_imposto: data.desconta_imposto,
+                    paciente_psi_mundo: data.paciente_psi_mundo
                 }
             });
 
@@ -214,6 +225,7 @@ class PacientesController {
             const { idPaciente, idSessao } = req.params;
 
             const paciente = await pacientes.findById(idPaciente);
+            
             if (!paciente) {
                 return res.status(404).send({ message: 'Paciente não encontrado' });
             }
