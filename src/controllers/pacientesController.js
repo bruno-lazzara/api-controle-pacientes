@@ -1,5 +1,4 @@
-import parametros from '../models/Parametro.js';
-import { pacientes } from '../models/index.js';
+import { pacientes, parametros } from '../models/index.js';
 
 class PacientesController {
     static listarPacientes = async (req, res) => {
